@@ -1,14 +1,18 @@
-#include <ncurses.h>
-#include <stdio.h>
+// подключаем библиотеки
+#include <ncurses.h> /* библиотека для интерактивных текстовых пользовательсих интерфейсов 
+                        (на её основе работают vim и emacs) */
+#include <stdio.h> // standart input output, стандартный ввод и вывод
 
-#define ROWS 25
-#define COLS 80
-#define MIN_DELAY 20
-#define MAX_DELAY 200
-#define STEP_DELAY 20
-#define DEFAULT_DELAY 100
+// задаем константы
+#define ROWS 25 // строки
+#define COLS 80 // колонки
+#define MIN_DELAY 20 // минимальная задержка
+#define MAX_DELAY 200 // максимальная задержка
+#define STEP_DELAY 20 // шаг при измненении задержки
+#define DEFAULT_DELAY 100 // изначальная задержка
 
-int input_field(int grid[ROWS][COLS]);
+// объявляем прототипы функций
+int input_field(int grid[ROWS][COLS]); 
 int count_neighbors(const int grid[ROWS][COLS], int row, int col);
 void step_simulation(const int src[ROWS][COLS], int dst[ROWS][COLS]);
 void copy_grid(const int src[ROWS][COLS], int dst[ROWS][COLS]);
@@ -16,9 +20,19 @@ void render(const int grid[ROWS][COLS], int delay_ms);
 int update_speed(int key, int current_delay);
 void run_game(int grid[ROWS][COLS]);
 
-int main(void) {
-    int status = 0;
-    int grid[ROWS][COLS];
+/*
+Функция main выступает лишь диспетчером. У неё 3 задачи:
+1) Вылелить память под поле;
+2) Проинициализировать изначальное состояние (для этого она вызывает функцию imput_field,
+   которая читает текстовый файл, переданный в программу при запуске);
+3) Вернуть ошибку, если функция input_field не смогла корректно прочитать файл, или
+   запустить игру, если функция input_field всё корректно прочитала
+*/
+int main(void) { // main ничего не принимает в аргументах и возвращает целое число.
+    int status = 0; // Переменная состояния, так называемый флаг.
+    int grid[ROWS][COLS]; // Создаем двумерный массив целых чисел размером 25/80. 
+                          // Мы объявили его внутри функции, поэтому он считается локальным
+                          /
 
     if (input_field(grid)) {
         const FILE *tty = freopen("/dev/tty", "r", stdin);
